@@ -8,7 +8,7 @@
 }
 
 body {
-  font-family: "Segoe UI", Arial, sans-serif;
+  font-family: 'Segoe UI', Arial, sans-serif;
   line-height: 1.4;
   color: #444;
   background: #fff;
@@ -31,6 +31,7 @@ body {
 
 .form-container {
   width: 100%;
+  max-width: 580px;
   margin-bottom: 20px;
   display: flex;
   border-radius: calc(0.5 * 100px);
