@@ -1,10 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { FaPlusCircle, FaSpinner } from 'react-icons/fa';
-
+import { useCallback, useEffect, useState } from 'react';
 import { createTodo } from '@/api/todo';
 import useFocus from '@/hooks/useFocus';
+import { Spinner } from '@/styles/common';
+import * as S from './style';
 
-const InputTodo = ({ setTodos }) => {
+type InputTodoProps = {
+  setTodos: React.Dispatch<React.SetStateAction<TodoType[]>>;
+};
+
+const InputTodo = ({ setTodos }: InputTodoProps) => {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { ref, setFocus } = useFocus();
@@ -14,9 +18,9 @@ const InputTodo = ({ setTodos }) => {
   }, [setFocus]);
 
   const handleSubmit = useCallback(
-    async (e) => {
+    async (event: React.FormEvent<HTMLFormElement>) => {
       try {
-        e.preventDefault();
+        event.preventDefault();
         setIsLoading(true);
 
         const trimmed = inputText.trim();
@@ -42,9 +46,8 @@ const InputTodo = ({ setTodos }) => {
   );
 
   return (
-    <form className="form-container" onSubmit={handleSubmit}>
-      <input
-        className="input-text"
+    <S.Form onSubmit={handleSubmit}>
+      <S.InputText
         placeholder="Add new todo..."
         ref={ref}
         value={inputText}
@@ -52,13 +55,13 @@ const InputTodo = ({ setTodos }) => {
         disabled={isLoading}
       />
       {!isLoading ? (
-        <button className="input-submit" type="submit">
-          <FaPlusCircle className="btn-plus" />
-        </button>
+        <S.SubmitButton type="submit">
+          <S.PlusIcon />
+        </S.SubmitButton>
       ) : (
-        <FaSpinner className="spinner" />
+        <Spinner />
       )}
-    </form>
+    </S.Form>
   );
 };
 

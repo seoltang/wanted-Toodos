@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-
+import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import InputTodo from '@/components/InputTodo';
 import TodoList from '@/components/TodoList';
 import { getTodoList } from '@/api/todo';
+import * as S from './style';
 
 const Main = () => {
-  const [todoListData, setTodoListData] = useState([]);
+  const [todoListData, setTodoListData] = useState<TodoType[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -16,13 +16,13 @@ const Main = () => {
   }, []);
 
   return (
-    <div className="container">
-      <div className="inner">
+    <S.Container>
+      <S.Inner>
         <Header />
         <InputTodo setTodos={setTodoListData} />
         <TodoList todos={todoListData} setTodos={setTodoListData} />
-      </div>
-    </div>
+      </S.Inner>
+    </S.Container>
   );
 };
 

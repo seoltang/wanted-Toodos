@@ -4,7 +4,7 @@ const theme = {
       100: '#ececec',
       200: '#eaeaea',
       300: '#dfdfdf',
-      600: '#444444',
+      444: '#444444',
     },
     white: '#ffffff',
     black: '#000000',

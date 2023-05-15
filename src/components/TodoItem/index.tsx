@@ -1,9 +1,15 @@
-import React, { useCallback, useState } from 'react';
-import { FaSpinner, FaTrash } from 'react-icons/fa';
-
+import { useCallback, useState } from 'react';
 import { deleteTodo } from '@/api/todo';
+import { Spinner } from '@/styles/common';
+import * as S from './style';
 
-const TodoItem = ({ id, title, setTodos }) => {
+type TodoItemProps = {
+  id: string;
+  title: string;
+  setTodos: React.Dispatch<React.SetStateAction<TodoType[]>>;
+};
+
+const TodoItem = ({ id, title, setTodos }: TodoItemProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleRemoveTodo = useCallback(async () => {
@@ -21,18 +27,18 @@ const TodoItem = ({ id, title, setTodos }) => {
   }, [id, setTodos]);
 
   return (
-    <li className="item">
+    <S.TodoItem>
       <span>{title}</span>
-      <div className="item-option">
+      <S.ItemOption>
         {!isLoading ? (
-          <button onClick={() => handleRemoveTodo()}>
-            <FaTrash className="btn-trash" />
-          </button>
+          <S.TrashButton onClick={() => handleRemoveTodo()}>
+            <S.TrashIcon />
+          </S.TrashButton>
         ) : (
-          <FaSpinner className="spinner" />
+          <Spinner />
         )}
-      </div>
-    </li>
+      </S.ItemOption>
+    </S.TodoItem>
   );
 };
 
