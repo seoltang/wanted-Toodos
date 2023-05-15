@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
-import { FaSpinner, FaTrash } from 'react-icons/fa';
 import { deleteTodo } from '@/api/todo';
+import { Spinner } from '@/styles/common';
+import * as S from './style';
 
 type TodoItemProps = {
   id: string;
@@ -26,18 +27,18 @@ const TodoItem = ({ id, title, setTodos }: TodoItemProps) => {
   }, [id, setTodos]);
 
   return (
-    <li className="item">
+    <S.TodoItem>
       <span>{title}</span>
-      <div className="item-option">
+      <S.ItemOption>
         {!isLoading ? (
-          <button onClick={() => handleRemoveTodo()}>
-            <FaTrash className="btn-trash" />
-          </button>
+          <S.TrashButton onClick={() => handleRemoveTodo()}>
+            <S.TrashIcon />
+          </S.TrashButton>
         ) : (
-          <FaSpinner className="spinner" />
+          <Spinner />
         )}
-      </div>
-    </li>
+      </S.ItemOption>
+    </S.TodoItem>
   );
 };
 

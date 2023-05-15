@@ -1,4 +1,5 @@
 import TodoItem from '../TodoItem';
+import * as S from './style';
 
 type TodoListProps = {
   todos: TodoType[];
@@ -13,7 +14,7 @@ const TodoList = ({ todos, setTodos }: TodoListProps) => {
       ))}
     </ul>
   ) : (
-    <div className="empty-list">...</div>
+    <S.Empty>...</S.Empty>
   );
 };
 
