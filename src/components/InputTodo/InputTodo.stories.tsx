@@ -1,4 +1,4 @@
-import InputTodo from './InputTodo';
+import InputTodo from '.';
 import type { Meta, StoryObj } from '@storybook/react';
 
 type Story = StoryObj<typeof meta>;

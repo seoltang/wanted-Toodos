@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
-
 import resetStyle from './resetStyle';
+import theme from './theme';
 
 const GlobalStyle = createGlobalStyle`
   ${resetStyle}
@@ -12,9 +12,9 @@ const GlobalStyle = createGlobalStyle`
   body {
     font-family: "Segoe UI", Arial, sans-serif;
     line-height: 1.4;
-    color: #444;
-    background: #fff;
-    height: 100vh;
+    color: ${theme.color.gray[444]};
+    background: ${theme.color.white};
+    min-height: 100vh;
   }
 `;
 

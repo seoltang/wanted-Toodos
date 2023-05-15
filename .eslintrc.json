@@ -16,18 +16,10 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": [
-    "react-refresh",
-    "@typescript-eslint",
-    "import"
-  ],
-  "ignorePatterns": [
-    "craco.config.js"
-  ],
+  "plugins": ["react-refresh", "@typescript-eslint", "import"],
+  "ignorePatterns": ["craco.config.ts"],
   "rules": {
-    "prettier/prettier": [
-      "error"
-    ],
+    "prettier/prettier": ["error"],
     "react-refresh/only-export-components": "warn",
     "import/order": [
       "error",
