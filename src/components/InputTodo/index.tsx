@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { createTodo } from '@/api/todo';
+import useDebounce from '@/hooks/useDebounce';
 import * as S from './style';
 import Dropdown from './Dropdown';
 
@@ -12,13 +13,15 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
 
+  const debouncedInputText = useDebounce(inputText, 500);
+
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       try {
         event.preventDefault();
         setIsLoadingSubmit(true);
 
-        const trimmed = inputText.trim();
+        const trimmed = debouncedInputText.trim();
         if (!trimmed) {
           return alert('Please write something');
         }
@@ -37,7 +40,7 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
         setIsLoadingSubmit(false);
       }
     },
-    [inputText, setTodos],
+    [debouncedInputText, setTodos],
   );
 
   return (
@@ -60,7 +63,10 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
         </S.SubmitButton>
       )}
 
-      <Dropdown isDropdownOpen={isDropdownOpen} inputText={inputText} />
+      <Dropdown
+        isDropdownOpen={isDropdownOpen}
+        inputText={debouncedInputText}
+      />
     </S.Form>
   );
 };
