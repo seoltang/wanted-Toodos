@@ -1,36 +1,57 @@
 import { css, styled } from 'styled-components';
 import { FaPlusCircle } from 'react-icons/fa';
+import { BiSearch } from 'react-icons/bi';
+import { Spinner, flexCustom } from '@/styles/common';
 
 export const Form = styled.form`
+  position: relative;
+  ${flexCustom('row', 'center', 'space-evenly')}
   width: 100%;
   max-width: 580px;
   margin-bottom: 20px;
-  display: flex;
-  border-radius: calc(0.5 * 100px);
-  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.38);
-  justify-content: space-evenly;
 `;
 
-const inputStyle = css`
-  height: 45px;
-  outline: none;
-  border: none;
+export const SearchIcon = styled(BiSearch)`
+  position: absolute;
+  left: 13px;
+  color: ${({ theme }) => theme.color.gray[700]};
+  font-size: 20px;
+`;
+
+export const fontStyle = css`
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  letter-spacing: 0.02em;
 `;
 
 export const InputText = styled.input`
-  ${inputStyle}
-  font-size: 1rem;
-  font-weight: 400;
-  width: 85%;
-  padding-right: 5px;
-  padding-left: 10px;
-  border-radius: calc(0.5 * 100px);
+  width: 100%;
+  padding: 12px 13px 12px 40px;
+  border: 1px solid ${({ theme }) => theme.color.gray[300]};
+  border-radius: 6px;
   background-color: transparent;
+  ${fontStyle}
+
+  &:hover {
+    border: 1px solid transparent;
+    outline: 3px solid ${({ theme }) => theme.color.gray[300]};
+  }
+
+  &:focus {
+    border-color: ${({ theme }) => theme.color.gray[600]};
+    outline: none;
+  }
+
+  &::placeholder {
+    color: ${({ theme }) => theme.color.gray[600]};
+  }
 `;
 
 export const SubmitButton = styled.button`
-  ${inputStyle}
-  background: transparent;
+  position: absolute;
+  right: -28px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -40,7 +61,16 @@ export const SubmitButton = styled.button`
   }
 `;
 
+export const SubmitSpinner = styled(Spinner)`
+  position: absolute;
+  right: -28px;
+`;
+
 export const PlusIcon = styled(FaPlusCircle)`
-  color: darkcyan;
+  color: ${({ theme }) => theme.color.green[500]};
   font-size: 20px;
+
+  :hover {
+    opacity: 1;
+  }
 `;

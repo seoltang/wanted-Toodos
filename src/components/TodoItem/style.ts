@@ -3,13 +3,13 @@ import { styled } from 'styled-components';
 
 export const TodoItem = styled.li`
   padding: 17px 1.5rem;
-  border-bottom: 1px solid #eaeaea;
+  border-bottom: 1px solid ${({ theme }) => theme.color.gray[100]};
   font-size: 1.2rem;
   letter-spacing: 1.5px;
 
   &:hover {
     opacity: 0.85;
-    background-color: #eaeaea;
+    background-color: ${({ theme }) => theme.color.gray[100]};
   }
 `;
 

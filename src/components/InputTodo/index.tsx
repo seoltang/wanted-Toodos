@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { createTodo } from '@/api/todo';
-import useFocus from '@/hooks/useFocus';
-import { Spinner } from '@/styles/common';
 import * as S from './style';
+import Dropdown from './Dropdown';
 
 type InputTodoProps = {
   setTodos: React.Dispatch<React.SetStateAction<TodoType[]>>;
@@ -10,18 +9,14 @@ type InputTodoProps = {
 
 const InputTodo = ({ setTodos }: InputTodoProps) => {
   const [inputText, setInputText] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const { ref, setFocus } = useFocus();
-
-  useEffect(() => {
-    setFocus();
-  }, [setFocus]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       try {
         event.preventDefault();
-        setIsLoading(true);
+        setIsLoadingSubmit(true);
 
         const trimmed = inputText.trim();
         if (!trimmed) {
@@ -39,7 +34,7 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
         alert('Something went wrong.');
       } finally {
         setInputText('');
-        setIsLoading(false);
+        setIsLoadingSubmit(false);
       }
     },
     [inputText, setTodos],
@@ -47,20 +42,25 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
 
   return (
     <S.Form onSubmit={handleSubmit}>
+      <S.SearchIcon />
       <S.InputText
         placeholder="Add new todo..."
-        ref={ref}
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
-        disabled={isLoading}
+        onFocus={() => setIsDropdownOpen(true)}
+        onBlur={() => setIsDropdownOpen(false)}
+        disabled={isLoadingSubmit}
+        autoFocus={true}
       />
-      {!isLoading ? (
+      {isLoadingSubmit ? (
+        <S.SubmitSpinner />
+      ) : (
         <S.SubmitButton type="submit">
           <S.PlusIcon />
         </S.SubmitButton>
-      ) : (
-        <Spinner />
       )}
+
+      <Dropdown isDropdownOpen={isDropdownOpen} inputText={inputText} />
     </S.Form>
   );
 };

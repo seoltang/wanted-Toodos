@@ -12,7 +12,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     font-family: "Segoe UI", Arial, sans-serif;
     line-height: 1.4;
-    color: ${theme.color.gray[444]};
+    color: ${theme.color.gray[900]};
     background: ${theme.color.white};
     min-height: 100vh;
   }
