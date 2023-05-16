@@ -143,6 +143,13 @@ const resetStyle = css`
     background: none;
     font: inherit;
     text-align: center;
+    cursor: pointer;
+  }
+
+  input {
+    padding: 0;
+    outline: none;
+    border: none;
   }
 `;
 

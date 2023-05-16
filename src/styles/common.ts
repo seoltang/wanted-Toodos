@@ -1,11 +1,21 @@
-import { FaSpinner } from 'react-icons/fa';
-import { styled } from 'styled-components';
+import { ImSpinner8 } from 'react-icons/im';
+import { css, styled } from 'styled-components';
 
-export const Spinner = styled(FaSpinner)`
+export const flexCustom = (
+  flexDirection = 'row',
+  alignItems = 'center',
+  justifyContent = 'center',
+) => css`
+  display: flex;
+  flex-direction: ${flexDirection};
+  align-items: ${alignItems};
+  justify-content: ${justifyContent};
+`;
+
+export const Spinner = styled(ImSpinner8)`
+  color: ${({ theme }) => theme.color.gray[800]};
   font-size: 20px;
   animation: spin 2s linear infinite;
-  display: flex;
-  align-self: center;
 
   @keyframes spin {
     0% {
