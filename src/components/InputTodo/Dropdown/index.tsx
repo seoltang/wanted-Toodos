@@ -1,36 +1,82 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { getAutocompleteList } from '@/api/autocomplete';
+import { Spinner } from '@/styles/common';
+import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import * as S from './style';
 
 type DropdownProps = {
   isDropdownOpen: boolean;
   inputText: string;
+  setInputText: React.Dispatch<React.SetStateAction<string>>;
+  handleSubmit: (input: string) => Promise<void>;
 };
 
-const AUTOCOMPLETE_TODOS = [
-  'Maecenas in lorem sit amet felis volutpat dapibus vulputate at dui.',
-  'Nam porta lorem ut turpis pellentesque, et efficitur felis ullamcorper.',
-  'Duis fringilla turpis vel lorem eleifend, sit amet hendrerit velit gravida. sit amet hendrerit velit gravida.',
-  'Cras in felis eget augue cursus placerat ac eget lorem.',
-  'Sed id orci quis mi porttitor pulvinar cursus eget lorem.',
-  'Fusce tincidunt lorem ac purus elementum, ut fermentum lacus mollis.',
-  'Nam commodo lorem ac posuere dignissim.',
-  'Etiam eu elit finibus enim consequat scelerisque aliquam vulputate lorem.',
-  'Donec in lorem id eros ornare aliquam ut a nisi.',
-  'Donec efficitur nulla eget lorem sollicitudin, in blandit massa dictum.',
-];
+const DEFAULT_PAGE_INDEX = 1;
+const LIMIT = 10;
 
-const onClickAutocomplete = (event: React.MouseEvent<HTMLLIElement>) => {
-  return event.currentTarget.innerText;
-};
+const Dropdown = ({
+  isDropdownOpen,
+  inputText,
+  setInputText,
+  handleSubmit,
+}: DropdownProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [autocompleteList, setAutocompleteList] = useState<string[]>([]);
+  const [pageIndex, setPageIndex] = useState(DEFAULT_PAGE_INDEX);
+  const [isLastPage, setIsLastPage] = useState(false);
 
-const Dropdown = ({ isDropdownOpen, inputText }: DropdownProps) => {
-  const [isLoadingAutocomplete] = useState(false);
-  const regex = new RegExp(inputText.replace(/\\/g, '\\\\'), 'gi');
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const regex = new RegExp(inputText.replace(/\\/g, '\\\\'), 'ig');
+
+  const onClickAutocomplete = (event: React.MouseEvent<HTMLLIElement>) => {
+    const input = event.currentTarget.innerText;
+    setInputText(input);
+    handleSubmit(input);
+  };
+
+  const onIntersect: IntersectionObserverCallback = ([{ isIntersecting }]) => {
+    if (isLoading || isLastPage) return;
+    if (isIntersecting) setPageIndex((prev) => prev + 1);
+  };
+
+  const { setTarget } = useIntersectionObserver(onIntersect);
+
+  useEffect(() => {
+    const searchAutocomplete = async () => {
+      const trimmedInputText = inputText.trim();
+      if (!trimmedInputText) return;
+
+      setIsLoading(true);
+      const response = await getAutocompleteList(trimmedInputText, pageIndex);
+      const { page, qty, total, result } = response.data;
+
+      setAutocompleteList((prev) =>
+        pageIndex === DEFAULT_PAGE_INDEX ? result : [...prev, ...result],
+      );
+
+      setIsLoading(false);
+
+      if ((page - DEFAULT_PAGE_INDEX) * LIMIT + qty === total)
+        setIsLastPage(true);
+    };
+
+    searchAutocomplete();
+  }, [inputText, pageIndex]);
+
+  useEffect(() => {
+    setPageIndex(DEFAULT_PAGE_INDEX);
+    setIsLastPage(false);
+    dropdownRef.current?.scrollTo({ top: 0 });
+  }, [inputText]);
 
   return (
-    <S.Dropdown $isOpen={!!inputText && isDropdownOpen}>
+    <S.Dropdown
+      ref={dropdownRef}
+      $isOpen={!!inputText && isDropdownOpen && !!autocompleteList.length}
+    >
       <S.AutocompleteList>
-        {AUTOCOMPLETE_TODOS.map((todo, index) => (
+        {autocompleteList.map((todo, index) => (
           <S.AutocompleteItem
             key={index + todo}
             onMouseDown={onClickAutocomplete}
@@ -49,7 +95,15 @@ const Dropdown = ({ isDropdownOpen, inputText }: DropdownProps) => {
           </S.AutocompleteItem>
         ))}
       </S.AutocompleteList>
-      {isLoadingAutocomplete ? <S.ScrollSpinner /> : <S.ViewMoreIcon />}
+      {isLastPage ? null : isLoading ? (
+        <S.IconWrapper>
+          <Spinner />
+        </S.IconWrapper>
+      ) : (
+        <S.IconWrapper ref={setTarget}>
+          <S.ViewMoreIcon />
+        </S.IconWrapper>
+      )}
     </S.Dropdown>
   );
 };

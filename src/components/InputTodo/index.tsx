@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { createTodo } from '@/api/todo';
+import useDebounce from '@/hooks/useDebounce';
 import * as S from './style';
 import Dropdown from './Dropdown';
 
@@ -12,13 +13,14 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
 
+  const debouncedInputText = useDebounce(inputText, 500);
+
   const handleSubmit = useCallback(
-    async (event: React.FormEvent<HTMLFormElement>) => {
+    async (input: string) => {
       try {
-        event.preventDefault();
         setIsLoadingSubmit(true);
 
-        const trimmed = inputText.trim();
+        const trimmed = input.trim();
         if (!trimmed) {
           return alert('Please write something');
         }
@@ -37,11 +39,17 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
         setIsLoadingSubmit(false);
       }
     },
-    [inputText, setTodos],
+
+    [setTodos],
   );
 
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    handleSubmit(debouncedInputText);
+  };
+
   return (
-    <S.Form onSubmit={handleSubmit}>
+    <S.Form onSubmit={onSubmit}>
       <S.SearchIcon />
       <S.InputText
         placeholder="Add new todo..."
@@ -60,7 +68,12 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
         </S.SubmitButton>
       )}
 
-      <Dropdown isDropdownOpen={isDropdownOpen} inputText={inputText} />
+      <Dropdown
+        isDropdownOpen={isDropdownOpen}
+        inputText={debouncedInputText}
+        setInputText={setInputText}
+        handleSubmit={handleSubmit}
+      />
     </S.Form>
   );
 };
