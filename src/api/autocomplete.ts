@@ -5,8 +5,8 @@ const RESOURCE = '/search';
 
 export const getAutocompleteList = async (
   InputText: string,
-  page?: number,
-  limit?: number,
+  page = 1,
+  limit = 10,
 ) => {
   const params = {
     q: InputText,

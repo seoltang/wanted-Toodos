@@ -16,12 +16,11 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
   const debouncedInputText = useDebounce(inputText, 500);
 
   const handleSubmit = useCallback(
-    async (event: React.FormEvent<HTMLFormElement>) => {
+    async (input: string) => {
       try {
-        event.preventDefault();
         setIsLoadingSubmit(true);
 
-        const trimmed = debouncedInputText.trim();
+        const trimmed = input.trim();
         if (!trimmed) {
           return alert('Please write something');
         }
@@ -40,11 +39,17 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
         setIsLoadingSubmit(false);
       }
     },
-    [debouncedInputText, setTodos],
+
+    [setTodos],
   );
 
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    handleSubmit(debouncedInputText);
+  };
+
   return (
-    <S.Form onSubmit={handleSubmit}>
+    <S.Form onSubmit={onSubmit}>
       <S.SearchIcon />
       <S.InputText
         placeholder="Add new todo..."
@@ -66,6 +71,8 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
       <Dropdown
         isDropdownOpen={isDropdownOpen}
         inputText={debouncedInputText}
+        setInputText={setInputText}
+        handleSubmit={handleSubmit}
       />
     </S.Form>
   );
